@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// This class represents an arrival monitor displaying flights and the status of bagge claims.
-/// The monitor listens to baggae info updates from the baggae handler.
+/// This class represents an arrival monitor displaying flights and the status of baggage claims.
+/// The monitor listens to baggage info updates from the baggage handler.
+/// <example>For example:
 /// <code>
 ///     BaggageHandler provider = new BaggageHandler();
 ///     ArrivalsMonitor BaggageClaimMonitor = new ArrivalsMonitor("BaggageClaimMonitor");
 ///     BaggageClaimMonitor.Subscribe(provider);
 /// </code>
+/// </example>
 /// </summary>
 public class ArrivalsMonitor : IObserver<BaggageInfo>
 {

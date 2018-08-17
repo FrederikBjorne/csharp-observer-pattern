@@ -7,11 +7,13 @@ using System.Collections.Generic;
 /// This class represents the baggage handler who receives baggage status information and updates
 /// all registered listeners. It holds all arriving flights and removes a flight when its dedicated
 /// baggage carousel is emptied.
+/// <example>For example:
 /// <code>
 ///     BaggageHandler provider = new BaggageHandler();
 ///     provider.Update(new BaggageInfo(712, "Detroit", 3));
 ///     provider.LastBaggageClaimed();
 /// </code>
+/// </example>
 /// </summary>
 public class BaggageHandler : IObservable<BaggageInfo>
 {
