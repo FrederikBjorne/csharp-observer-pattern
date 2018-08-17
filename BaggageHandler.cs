@@ -2,14 +2,20 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 
+
+/// <summary>
+/// This class represents the baggage handler who receives baggage status information and updates
+/// all registered listeners. It holds all arriving flights and removes a flight when its dedicated
+/// baggage carousel is emptied.
+/// <code>
+///     BaggageHandler provider = new BaggageHandler();
+///     provider.Update(new BaggageInfo(712, "Detroit", 3));
+///     provider.LastBaggageClaimed();
+/// </code>
+/// </summary>
 public class BaggageHandler : IObservable<BaggageInfo>
 {
-    /// <summary>
-    /// This class represents the baggage handler who receives baggage status information and updates all
-    /// all registered listeners. It holds all arriving flights and removes a flight when its dedicated
-    /// baggage carousel is emptied.
-    /// </summary>
-    private HashSet<IObserver<BaggageInfo>> observers;
+    private HashSet<IObserver<BaggageInfo>> observers; // all observers for baggage info updates
     private HashSet<BaggageInfo> flights;
 
     public BaggageHandler()
@@ -49,20 +55,24 @@ public class BaggageHandler : IObservable<BaggageInfo>
         return new Unsubscriber<BaggageInfo>(observers, observer);  // mark for deletion when not referenced
     }
 
-    // Called to indicate all baggage is now unloaded.
+    /// <summary>Called to indicate all baggage is now picked from the assigned carousel.</summary>
+    /// <param name="flightNo">The arriving flight number.</param>
     public void Update(int flightNo)
     {
         Update(new BaggageInfo(flightNo));
     }
 
+    /// <summary>Update baggage status for a certain flight. If carousel is not claimed, then baggage info
+    /// is removed.
+    /// </summary>
+    /// <param name="info">The baggage info for a certained arrived flight.</param>
     public void Update(BaggageInfo info)
     {
-
         Func<bool> isFlightNotKnown = () => !flights.Contains(info);
 
-        if (!info.IsBaggageClaimAssigned())  // this is strange! Shouldn't be evaluated when creating object?
+        if (!info.IsBaggageClaimAssigned())  // this is strange! Shouldn't it be evaluated when creating object?
         {
-            // Baggage claim for flight is done// If we never add same
+            // Baggage claim for flight is done
             BaggageInfo flightToRemove = null;
             foreach (var flight in flights)
             {

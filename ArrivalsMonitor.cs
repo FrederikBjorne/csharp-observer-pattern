@@ -1,11 +1,18 @@
 using System;
 using System.Collections.Generic;
 
+
+/// <summary>
+/// This class represents an arrival monitor displaying flights and the status of bagge claims.
+/// The monitor listens to baggae info updates from the baggae handler.
+/// <code>
+///     BaggageHandler provider = new BaggageHandler();
+///     ArrivalsMonitor BaggageClaimMonitor = new ArrivalsMonitor("BaggageClaimMonitor");
+///     BaggageClaimMonitor.Subscribe(provider);
+/// </code>
+/// </summary>
 public class ArrivalsMonitor : IObserver<BaggageInfo>
 {
-    /**
-     The ArrivalMonitor listens to new flight infos
-     */
     private string name;
     private SortedSet<string> flightInfos = new SortedSet<string>();
     private IDisposable cancellation;
@@ -84,9 +91,4 @@ public class ArrivalsMonitor : IObserver<BaggageInfo>
             Console.WriteLine();
         }
     }
-}
-
-interface ArrivalPresenter
-{
-    
 }

@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
 
+
+/// <summary>
+/// This poco class represents the baggage status information for a flight arrival all registered listeners.
+/// Creating a baggage info object with carousel zero (default) means that the carousel is empty and all
+/// baggages has been collected.
+/// </summary>
 public class BaggageInfo
-{
-    /// <summary>
-    /// This class represnts the baggage status information for a new flight arrival
-    /// all registered listeners. Creating a baggage info object with carousel zero (default)
-    /// means that the carousel is empty and all baggages has been collected.
-    /// </summary>
-    private int flightNo, location;
+{    private int flightNo, location;
     private string origin;
 
+    /// <summary>Constructor setting its status..</summary>
+    /// <param name="flightNo">The arriving flight number.</param>
+    /// <param name="from">The source airport for this flight.</param>
+    /// <param name="carousel">The assigned carousel for this flight to pick up baggage. Zero value means empty.
+    /// </param>    
     internal BaggageInfo(int flightNo, string from = "", int carousel = 0)
     {
         this.flightNo = flightNo;
@@ -33,6 +38,7 @@ public class BaggageInfo
         get => this.location;
     }
 
+    /// <summary>Returns true, if a baggage claim has been appointed and false if not.</summary>
     public bool IsBaggageClaimAssigned()
     {
         return this.location != 0;
