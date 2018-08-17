@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// This poco class represents the baggage status information for a flight arrival all registered listeners.
+/// This poco class represents the baggage status information for a flight arrival, i.e. flight number, what
+/// airport/city the flight arrives from and an assigned baggage claim.
 /// Creating a baggage info object with carousel zero (default) means that the carousel is empty and all
 /// baggages has been collected.
 /// </summary>
