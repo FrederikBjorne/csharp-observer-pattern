@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// This class represents an arrival monitor displaying flights and the status of baggage claims.
-/// The monitor listens to baggage info updates from the baggage handler.
+/// This class represents an arrival monitor displaying flights and observes baggage info updates from the
+/// baggage handler.
 /// <example>For example:
 /// <code>
 ///     BaggageHandler provider = new BaggageHandler();

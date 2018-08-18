@@ -4,9 +4,14 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// This class represents the baggage handler who receives baggage status information and updates
-/// all registered listeners. It holds all arriving flights and removes a flight when its dedicated
-/// baggage carousel is emptied.
+/// This class is a provider of arriving flights and baggage claim carousels updates.
+/// Internally, it maintains two collections:
+///     observers - A collection of clients that will receive updated information
+///     flights - A collection of flights and their assigned carousels
+///
+/// An observer may subscribe for baggage claim information updates by registering with the method Subscribe.
+/// The provider is updated by calling method Update with baggage info.
+/// A flight is removed when its dedicated baggage claim carousel is unassigned.
 /// <example>For example:
 /// <code>
 ///     BaggageHandler provider = new BaggageHandler();
@@ -26,6 +31,8 @@ public class BaggageHandler : IObservable<BaggageInfo>
         flights = new HashSet<BaggageInfo>();
     }
 
+    /// <summary>When the object's Dispose method is called, it checks whether the observer still exists in the
+    /// observers collection, and, if it does, removes the observer.</summary>
     internal class Unsubscriber<BaggageInfo> : IDisposable
     {
         private HashSet<IObserver<BaggageInfo>> _observers;
@@ -44,6 +51,10 @@ public class BaggageHandler : IObservable<BaggageInfo>
         }
     }
 
+    /// <summary>Called by observers to subscribe for baggage info updates.</summary>
+    /// <param name="observer">The subscribing observer object.</param>
+    /// <returns>returns an IDisposable implementation that enables observers to stop receiving notifications
+    /// before the OnCompleted method is called.</returns>
     public IDisposable Subscribe(IObserver<BaggageInfo> observer)
     {
         // Check whether observer is already registered. If not, add it
@@ -66,13 +77,13 @@ public class BaggageHandler : IObservable<BaggageInfo>
 
     /// <summary>Update baggage status for a certain flight. If carousel is not claimed, then baggage info
     /// is removed.
-    /// </summary>
     /// <param name="info">The baggage info for a certained arrived flight.</param>
+    /// </summary>
     public void Update(BaggageInfo info)
     {
         Func<bool> isFlightNotKnown = () => !flights.Contains(info);
 
-        if (!info.IsBaggageClaimAssigned())  // this is strange! Shouldn't it be evaluated when creating object?
+        if (!info.IsBaggageClaimAssigned())  // If baggage claim is unassigned, the flight is removed
         {
             // Baggage claim for flight is done
             BaggageInfo flightToRemove = null;
@@ -81,7 +92,7 @@ public class BaggageHandler : IObservable<BaggageInfo>
                 if (info.FlightNumber.Equals(flight.FlightNumber))
                 {
                     foreach (var observer in observers)
-                        observer.OnNext(info);
+                        observer.OnNext(info);  // update observers
                     flightToRemove = flight;
                 }
             }
@@ -100,10 +111,11 @@ public class BaggageHandler : IObservable<BaggageInfo>
         }
     }
 
+    /// <summary>Called when the last flight of the day has landed and its baggage has been processed.true</summary>
     public void LastBaggageClaimed()
     {
         foreach (var observer in observers)
-            observer.OnCompleted();
+            observer.OnCompleted(); // the provider has finished sending notifications
 
         observers.Clear(); // remove all observers
     }
